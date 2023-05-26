@@ -12,6 +12,7 @@ import com.neta.app.emnu.commentsEnum;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.service.RequestService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
  * @author: Ajar
  * @time: 2023/5/26 17:31
  */
+@Service
 public class RequestServiceImpl implements RequestService {
     @Value("${authorization}")
     String authorization;
@@ -85,5 +87,15 @@ public class RequestServiceImpl implements RequestService {
 
 
         return netaResponse;
+    }
+
+    @Override
+    public int sign() {
+        //签到
+        String sign = HttpRequest.get(RequestEnum.sign.getUrl())
+                .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
+                .timeout(20000)//超时，毫秒
+                .execute().body();
+        return (Integer) JSONUtil.parseObj(sign).get("code");
     }
 }

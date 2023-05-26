@@ -15,4 +15,6 @@ public interface RequestService {
     int insertArtComment(String openId, String groupId);
 
     List<NetaResponse> getArticleList();
+
+    int sign();
 }
