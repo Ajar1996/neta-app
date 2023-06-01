@@ -164,4 +164,9 @@ public class RequestServiceImpl implements RequestService {
         log.info("token刷新成功,authorization为{}，refreshToken为{}", this.authorization, this.refreshToken);
         return true;
     }
+
+    @Override
+    public String getToken() {
+        return this.authorization;
+    }
 }

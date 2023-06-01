@@ -19,4 +19,6 @@ public interface RequestService {
     int sign();
 
     boolean refreshToken();
+
+    String getToken();
 }

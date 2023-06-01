@@ -6,7 +6,6 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.neta.app.emnu.RequestEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -24,14 +23,11 @@ public class TestApplicationSuccess implements ApplicationRunner {
     @Resource
     RequestService requestService;
 
-    @Value("${authorization}")
-    String authorization;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //获取帖子列表
         String articleListResponse = HttpRequest.get(RequestEnum.getArticleList.getUrl())
-                .header(Header.AUTHORIZATION, authorization)
+                .header(Header.AUTHORIZATION, requestService.getToken())
                 .form("category", "xiaoquan")
                 .form("refreshType", "refresh")
                 .form("uuid", IdUtil.simpleUUID())
@@ -44,7 +40,7 @@ public class TestApplicationSuccess implements ApplicationRunner {
             if (success) {
                 //获取帖子列表
                 articleListResponse = HttpRequest.get(RequestEnum.getArticleList.getUrl())
-                        .header(Header.AUTHORIZATION, authorization)
+                        .header(Header.AUTHORIZATION, requestService.getToken())
                         .form("category", "xiaoquan")
                         .form("refreshType", "refresh")
                         .form("uuid", IdUtil.simpleUUID())
@@ -56,6 +52,8 @@ public class TestApplicationSuccess implements ApplicationRunner {
         if ((Integer) JSONUtil.parseObj(articleListResponse).get("code") != 200) {
             log.error("程序启动失败，请检查token，{}", articleListResponse);
             System.exit(0);
+        } else {
+            log.info("程序验证成功！拿铁加油！");
         }
     }
 }
