@@ -25,8 +25,8 @@ public class SchedulingTaskBasic {
     /**
      * 每天8点执行一次
      */
-    //@Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 0 8 * * ?")
+    //@Scheduled(cron = "*/5 * * * * ?")
     private void printNowDate() throws InterruptedException {
         List<NetaResponse> netaResponses = requestService.getArticleList();
         for (NetaResponse netaResponse : netaResponses) {
