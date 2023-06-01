@@ -32,23 +32,23 @@ token需要用的APP-Stream,自行到商店下载
 
 1. 打开哪吒APP，退出登录，然后打开Stream，点击开始捉包
 
-![b7e83aaddb6494459f90bcf0d68fcaf](.\image\b7e83aaddb6494459f90bcf0d68fcaf.png)
+![b7e83aaddb6494459f90bcf0d68fcaf](./image/b7e83aaddb6494459f90bcf0d68fcaf.png)
 
 2. 打开哪吒汽车APP登录，点击发送验证码
 
-![53d6050f9bd5ef441b7e95d36be8a0d](.\image\53d6050f9bd5ef441b7e95d36be8a0d.png)
+![53d6050f9bd5ef441b7e95d36be8a0d](./image/53d6050f9bd5ef441b7e95d36be8a0d.png)
 
 3. 登录成功后，打开Stream，点击停止捉包
 
-   ![3fa9de49bb2e33d9b8fec0bdd17f66b](.\image\3fa9de49bb2e33d9b8fec0bdd17f66b.png)
+   ![3fa9de49bb2e33d9b8fec0bdd17f66b](./image/3fa9de49bb2e33d9b8fec0bdd17f66b.png)
 
 4. 点击捉包历史，点击第一条记录，点击右上角的搜索框，输入Login(注意大小写)，然后确定
 
-![252a23f7c53c504e926e57915e8d065](.\image\252a23f7c53c504e926e57915e8d065.png)
+![252a23f7c53c504e926e57915e8d065](./image/252a23f7c53c504e926e57915e8d065.png)
 
 5. 点击响应，然后点击查看响应，往下拉会看到有个refresh_token的字段，如图复制，即使程序所需要的token
 
-   ![1685604539701](.\image\1685604539701.jpg)
+   ![1685604539701](./image/1685604539701.jpg)
 
 6. 进入到目录，输入cmd，进入命令行界面，输入
 
@@ -58,9 +58,9 @@ token需要用的APP-Stream,自行到商店下载
 
    xxxx为刚才复制refreshToken
 
-![1685604805136](.\image\1685604805136.jpg)
+![1685604805136](./image/1685604805136.jpg)
 
-![1685607328573](.\image\1685607328573.jpg)
+![1685607328573](./image/1685607328573.jpg)
 
 如图所示即为成功
 
