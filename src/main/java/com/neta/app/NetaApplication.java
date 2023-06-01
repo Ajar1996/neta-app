@@ -16,6 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class NetaApplication {
     public static void main(String[] args) {
         //每天自动签到，评论，转发 获得5+2*3+1*3=14积分
+
         SpringApplication.run(NetaApplication.class, args);
+
     }
 }
