@@ -32,7 +32,7 @@ token需要用的APP-Stream,自行到商店下载
 
 1. 打开哪吒APP，退出登录，然后打开Stream，点击开始捉包
 
-![b7e83aaddb6494459f90bcf0d68fcaf](.\image\b7e83aaddb6494459f90bcf0d68fcaf.png)
+![b7e83aaddb6494459f90bcf0d68fcaf](./image/b7e83aaddb6494459f90bcf0d68fcaf.png)
 
 2. 打开哪吒汽车APP登录，点击发送验证码
 
