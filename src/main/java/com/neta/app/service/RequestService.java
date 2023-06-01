@@ -17,4 +17,6 @@ public interface RequestService {
     List<NetaResponse> getArticleList();
 
     int sign();
+
+    boolean refreshToken();
 }
