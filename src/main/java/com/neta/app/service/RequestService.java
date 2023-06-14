@@ -1,6 +1,7 @@
 package com.neta.app.service;
 
 import com.neta.app.model.NetaResponse;
+import com.neta.app.model.Token;
 
 import java.util.List;
 
@@ -10,15 +11,14 @@ import java.util.List;
  * @time: 2023/5/26 17:28
  */
 public interface RequestService {
-    int forwarArticle(String groupId);
+    int forwarArticle(String groupId, String authorization);
 
-    int insertArtComment(String openId, String groupId);
+    int insertArtComment(String openId, String groupId, String authorization);
 
-    List<NetaResponse> getArticleList();
+    List<NetaResponse> getArticleList(String authorization);
 
-    int sign();
+    int sign(String authorization);
 
-    boolean refreshToken();
+    Token refreshToken(String refreshToken);
 
-    String getToken();
 }
