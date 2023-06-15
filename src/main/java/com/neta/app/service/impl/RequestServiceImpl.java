@@ -40,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
         if ((Integer) JSONUtil.parseObj(forwar).get("code") != 200) {
             log.error("转发失败，{}", forwar);
             //发邮件提醒
-            System.exit(0);
+            return 500;
         }
 
         log.info("转发成功,{}", forwar);
@@ -65,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
         if ((Integer) JSONUtil.parseObj(commnetsRespone).get("code") != 200) {
             log.error("评论失败，{}", commnetsRespone);
             //发邮件提醒
-            System.exit(0);
+            return 500;
         }
         log.info("评论成功,{}", commnetsRespone);
 
@@ -87,7 +87,7 @@ public class RequestServiceImpl implements RequestService {
         if ((Integer) JSONUtil.parseObj(articleListResponse).get("code") != 200) {
             log.error("获取帖子列表失败，{}", articleListResponse);
             //发邮件提醒
-            System.exit(0);
+            return new ArrayList<>();
         }
 
         List<NetaResponse> netaResponse = new ArrayList<>();
@@ -115,7 +115,7 @@ public class RequestServiceImpl implements RequestService {
         if ((Integer) JSONUtil.parseObj(sign).get("code") != 200) {
             log.error("签到失败信息为，{}", sign);
             //发邮件提醒
-            System.exit(0);
+            return 500;
         }
 
         return (Integer) JSONUtil.parseObj(sign).get("code");
@@ -136,7 +136,7 @@ public class RequestServiceImpl implements RequestService {
             //发邮件，刷新失败
 
             //退出程序
-            return null;
+            return new Token();
         }
         Token token = new Token();
         token.setRefreshToken((String) JSONUtil.parseObj(JSONUtil.parseObj(tokenResponse).get("data")).get("refresh_token"));

@@ -30,8 +30,8 @@ public class SchedulingTaskBasic {
     /**
      * 每天8点执行一次
      */
-    //@Scheduled(cron = "0 0 8 * * ?")
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
+    //@Scheduled(cron = "*/5 * * * * ?")
     private void printNowDate() throws InterruptedException {
         for (int i = 0; i < refreshToken.size(); i++) {
             Token token = requestService.refreshToken(refreshToken.get(i));
