@@ -8,6 +8,7 @@ import com.neta.app.model.Token;
 import com.neta.app.model.TokenConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,13 +21,14 @@ import java.util.HashMap;
  */
 @Component
 @Slf4j
-public class TestApplicationSuccess {
+public class TestApplicationSuccess implements ApplicationRunner {
     @Resource
     RequestService requestService;
 
     @Resource
     TokenConfiguration tokenConfiguration;
 
+    @Override
     public void run(ApplicationArguments args) throws Exception {
         HashMap<String, String> refreshToken = tokenConfiguration.getRefreshToken();
         for (String key : refreshToken.keySet()) {
