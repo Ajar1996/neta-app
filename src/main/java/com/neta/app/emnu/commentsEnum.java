@@ -15,7 +15,9 @@ public enum commentsEnum {
     comments7("必须的！"),
     comments8("牛的牛的"),
     comments9("加油加油！"),
-    comments10("我觉得很不错");
+    comments10("哪吒真不错！"),
+    comments11("哪吒可以的！"),
+    comments12("我觉得很不错");
 
     private commentsEnum(String url) {
         this.url = url;
