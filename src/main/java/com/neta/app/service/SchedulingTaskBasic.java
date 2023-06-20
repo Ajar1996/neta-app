@@ -3,12 +3,13 @@ package com.neta.app.service;
 import cn.hutool.core.util.RandomUtil;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
+import com.neta.app.model.TokenConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,8 +25,8 @@ public class SchedulingTaskBasic {
     @Resource
     RequestService requestService;
 
-    @Value("${refreshToken}")
-    List<String> refreshToken;
+    @Resource
+    TokenConfiguration tokenConfiguration;
 
     /**
      * 每天8点执行一次
@@ -33,12 +34,13 @@ public class SchedulingTaskBasic {
     @Scheduled(cron = "0 0 1 * * ?")
     //@Scheduled(cron = "*/5 * * * * ?")
     private void printNowDate() throws InterruptedException {
-        for (int i = 0; i < refreshToken.size(); i++) {
-            Token token = requestService.refreshToken(refreshToken.get(i));
+        HashMap<String, String> refreshToken = tokenConfiguration.getRefreshToken();
+        for (String key : refreshToken.keySet()) {
+            Token token = requestService.refreshToken(refreshToken.get(key));
             if (token == null) {
                 continue;
             }
-            refreshToken.set(i, token.getRefreshToken());
+            refreshToken.put(key, token.getRefreshToken());
             String authorization = token.getAuthorization();
             List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
             for (NetaResponse netaResponse : netaResponses) {
@@ -49,7 +51,7 @@ public class SchedulingTaskBasic {
                 requestService.forwarArticle(netaResponse.getGroupId(), authorization);
             }
             requestService.sign(authorization);
-            log.info("执行成功");
+            log.info(key + "执行成功");
         }
     }
 }
