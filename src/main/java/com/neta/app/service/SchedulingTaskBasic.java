@@ -31,12 +31,12 @@ public class SchedulingTaskBasic {
     /**
      * 每天8点执行一次
      */
-    @Scheduled(cron = "0 0 1 * * ?")
+     @Scheduled(cron = "0 0 1 * * ?")
     //@Scheduled(cron = "*/5 * * * * ?")
     private void printNowDate() throws InterruptedException {
         HashMap<String, String> refreshToken = tokenConfiguration.getRefreshToken();
         for (String key : refreshToken.keySet()) {
-            Thread.sleep(RandomUtil.randomInt(1200000, 2000000));
+            Thread.sleep(RandomUtil.randomInt(12000, 20000));
             Token token = requestService.refreshToken(refreshToken.get(key));
             if (token == null) {
                 continue;
@@ -46,9 +46,9 @@ public class SchedulingTaskBasic {
             List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
             for (NetaResponse netaResponse : netaResponses) {
                 //休眠，避免被发现是脚本
-                Thread.sleep(RandomUtil.randomInt(100000, 150000));
+                Thread.sleep(RandomUtil.randomInt(10000, 15000));
                 requestService.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
-                Thread.sleep(RandomUtil.randomInt(100000, 150000));
+                Thread.sleep(RandomUtil.randomInt(10000, 15000));
                 requestService.forwarArticle(netaResponse.getGroupId(), authorization);
             }
             requestService.sign(authorization);
