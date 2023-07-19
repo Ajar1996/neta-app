@@ -29,7 +29,7 @@ public class SchedulingTaskBasic {
     TokenConfiguration tokenConfiguration;
 
     /**
-     * 每天8点执行一次
+     * 每天1点执行一次
      */
      @Scheduled(cron = "0 0 1 * * ?")
     //@Scheduled(cron = "*/5 * * * * ?")

@@ -141,7 +141,8 @@ public class RequestServiceImpl implements RequestService {
         Token token = new Token();
         token.setRefreshToken((String) JSONUtil.parseObj(JSONUtil.parseObj(tokenResponse).get("data")).get("refresh_token"));
         token.setAuthorization((String) JSONUtil.parseObj(JSONUtil.parseObj(tokenResponse).get("data")).get("access_token"));
-        log.info("token刷新成功,authorization为{}，refreshToken为{}", token.getAuthorization(), token.getRefreshToken());
+        log.info("token刷新成功,refreshToken为");
+        log.info(token.getRefreshToken());
         return token;
     }
 
