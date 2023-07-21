@@ -21,14 +21,14 @@ import java.util.HashMap;
  */
 @Component
 @Slf4j
-public class TestApplicationSuccess implements ApplicationRunner {
+public class TestApplicationSuccess  {
     @Resource
     RequestService requestService;
 
     @Resource
     TokenConfiguration tokenConfiguration;
 
-    @Override
+
     public void run(ApplicationArguments args) throws Exception {
         HashMap<String, String> refreshToken = tokenConfiguration.getRefreshToken();
         for (String key : refreshToken.keySet()) {
