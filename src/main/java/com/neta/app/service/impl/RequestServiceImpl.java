@@ -109,6 +109,12 @@ public class RequestServiceImpl implements RequestService {
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
                 .timeout(20000)//超时，毫秒
                 .execute().body();
+
+        if ((Integer) JSONUtil.parseObj(sign).get("code") != 417) {
+            log.error("签到失败信息为，{}", sign);
+            return (Integer) JSONUtil.parseObj(sign).get("code");
+        }
+
         if ((Integer) JSONUtil.parseObj(sign).get("code") != 200) {
             log.error("签到失败信息为，{}", sign);
             throw new Exception("签到失败信息"+sign);
