@@ -21,4 +21,6 @@ public interface RequestService {
 
     Token refreshToken(String refreshToken) throws Exception;
 
+    boolean checkSign(String authorization) throws Exception;
+
 }

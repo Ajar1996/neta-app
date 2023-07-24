@@ -10,7 +10,9 @@ public enum RequestEnum {
     getArticleList("https://appapi-pki.chehezhi.cn:18443/hznz/app_article/common/article/rec/list"),
     insertArtComment("https://api.chehezhi.cn/hznz/app_article_comment/insertArtComment"),
     refreshToken("https://appapi-pki.chehezhi.cn:18443/customer/account/info/refreshApiToken"),
-    forwarArticle("https://appapi-pki.chehezhi.cn:18443/hznz/app_article/forwarArticle");
+    forwarArticle("https://appapi-pki.chehezhi.cn:18443/hznz/app_article/forwarArticle"),
+
+    checkSign("https://appapi-pki.chehezhi.cn:18443/hznz/customer/getCustomer");
 
 
     private RequestEnum(String url) {

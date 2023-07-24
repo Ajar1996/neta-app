@@ -1,8 +1,6 @@
 package com.neta.app.service;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.mail.MailAccount;
-import cn.hutool.extra.mail.MailUtil;
 import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
@@ -14,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -43,12 +40,12 @@ public class SchedulingTaskBasic {
      */
     // @Scheduled(cron = "0 0 1 * * ?")
     @Scheduled(cron = "*/5 * * * * ?")
-    private void printNowDate() throws InterruptedException {
+    private void sign() throws InterruptedException {
 
-       List<User> userList= userService.list();
-        for (User user:userList) {
+        List<User> userList = userService.list();
+        for (User user : userList) {
             try {
-                log.info("{}开始执行",user.getName());
+                log.info("{}开始执行", user.getName());
                 Thread.sleep(RandomUtil.randomInt(12000, 20000));
                 Token token = requestService.refreshToken(user.getRefreshToken());
                 if (token == null) {
@@ -56,6 +53,7 @@ public class SchedulingTaskBasic {
                 }
                 user.setRefreshToken(token.getRefreshToken());
                 //更新token
+
                 userService.updateById(user);
 
 
@@ -69,13 +67,29 @@ public class SchedulingTaskBasic {
                     requestService.forwarArticle(netaResponse.getGroupId(), authorization);
                 }
                 requestService.sign(authorization);
-                log.info("{}执行成功",user.getName());
-            }catch (Exception e){
+                log.info("{}执行成功", user.getName());
+            } catch (Exception e) {
                 e.printStackTrace();
-                log.error("{}执行失败",user.getName());
+                log.error("{}执行失败", user.getName());
                 mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到失败", "请登录网站刷新你的授权码");
             }
 
         }
     }
+
+    @Scheduled(cron = "0 0 23 * * ?")
+    private void checkSign() throws InterruptedException {
+        List<User> userList = userService.list();
+        for (User user : userList) {
+
+            try {
+                requestService.checkSign(user.getRefreshToken());
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("{}还没有签到", user.getName());
+                mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
+            }
+        }
+    }
+
 }

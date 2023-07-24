@@ -144,5 +144,20 @@ public class RequestServiceImpl implements RequestService {
         return token;
     }
 
+    @Override
+    public boolean checkSign(String authorization) throws Exception {
+        //检查是否签到
+        String checkSignResponse = HttpRequest.get(RequestEnum.checkSign.getUrl())
+                .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
+                .timeout(20000)//超时，毫秒
+                .execute().body();
+        int checkSign = ((int) JSONUtil.parseObj(JSONUtil.parseObj(checkSignResponse).get("data")).get("sign"));
+        if (checkSign != 0) {
+            throw new Exception("还没签到");
+        } else
+            return true;
+
+    }
+
 
 }
