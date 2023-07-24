@@ -28,7 +28,7 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
 
     @Override
-    public int forwarArticle(String groupId, String authorization) {
+    public int forwarArticle(String groupId, String authorization) throws Exception {
         //转发帖子
         String forwar = HttpRequest.put(RequestEnum.forwarArticle.getUrl())
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
@@ -39,8 +39,7 @@ public class RequestServiceImpl implements RequestService {
                 .execute().body();
         if ((Integer) JSONUtil.parseObj(forwar).get("code") != 200) {
             log.error("转发失败，{}", forwar);
-            //发邮件提醒
-            return 500;
+            throw new Exception("转发失败"+forwar);
         }
 
         log.info("转发成功,{}", forwar);
@@ -48,7 +47,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public int insertArtComment(String openId, String groupId, String authorization) {
+    public int insertArtComment(String openId, String groupId, String authorization) throws Exception {
         //评论帖子
         String commnetsRespone = HttpRequest.post(RequestEnum.insertArtComment.getUrl())
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
@@ -64,8 +63,7 @@ public class RequestServiceImpl implements RequestService {
 
         if ((Integer) JSONUtil.parseObj(commnetsRespone).get("code") != 200) {
             log.error("评论失败，{}", commnetsRespone);
-            //发邮件提醒
-            return 500;
+            throw new Exception("评论失败"+commnetsRespone);
         }
         log.info("评论成功,{}", commnetsRespone);
 
@@ -73,7 +71,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<NetaResponse> getArticleList(String authorization) {
+    public List<NetaResponse> getArticleList(String authorization) throws Exception {
         //获取帖子列表
         String articleListResponse = HttpRequest.get(RequestEnum.getArticleList.getUrl())
                 .header(Header.AUTHORIZATION, authorization)
@@ -86,8 +84,7 @@ public class RequestServiceImpl implements RequestService {
 
         if ((Integer) JSONUtil.parseObj(articleListResponse).get("code") != 200) {
             log.error("获取帖子列表失败，{}", articleListResponse);
-            //发邮件提醒
-            return new ArrayList<>();
+            throw new Exception("获取帖子列表失败"+articleListResponse);
         }
 
         List<NetaResponse> netaResponse = new ArrayList<>();
@@ -106,16 +103,21 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public int sign(String authorization) {
+    public int sign(String authorization) throws Exception {
         //签到
         String sign = HttpRequest.get(RequestEnum.sign.getUrl())
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
                 .timeout(20000)//超时，毫秒
                 .execute().body();
+
+        if ((Integer) JSONUtil.parseObj(sign).get("code") != 417) {
+            log.error("签到失败信息为，{}", sign);
+            return (Integer) JSONUtil.parseObj(sign).get("code");
+        }
+
         if ((Integer) JSONUtil.parseObj(sign).get("code") != 200) {
             log.error("签到失败信息为，{}", sign);
-            //发邮件提醒
-            return 500;
+            throw new Exception("签到失败信息"+sign);
         }
 
         return (Integer) JSONUtil.parseObj(sign).get("code");
@@ -123,7 +125,7 @@ public class RequestServiceImpl implements RequestService {
 
 
     @Override
-    public Token refreshToken(String refreshToken) {
+    public Token refreshToken(String refreshToken) throws Exception {
         //刷新token
         String tokenResponse = HttpRequest.post(RequestEnum.refreshToken.getUrl())
                 .form("refreshToken", refreshToken)
@@ -132,11 +134,7 @@ public class RequestServiceImpl implements RequestService {
 
         if ((Integer) JSONUtil.parseObj(tokenResponse).get("code") != 20000) {
             log.error("刷新失败,{}", tokenResponse);
-
-            //发邮件，刷新失败
-
-            //退出程序
-            return new Token();
+            throw new Exception("tokenResponse");
         }
         Token token = new Token();
         token.setRefreshToken((String) JSONUtil.parseObj(JSONUtil.parseObj(tokenResponse).get("data")).get("refresh_token"));

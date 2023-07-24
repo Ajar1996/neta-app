@@ -11,14 +11,14 @@ import java.util.List;
  * @time: 2023/5/26 17:28
  */
 public interface RequestService {
-    int forwarArticle(String groupId, String authorization);
+    int forwarArticle(String groupId, String authorization) throws Exception;
 
-    int insertArtComment(String openId, String groupId, String authorization);
+    int insertArtComment(String openId, String groupId, String authorization) throws Exception;
 
-    List<NetaResponse> getArticleList(String authorization);
+    List<NetaResponse> getArticleList(String authorization) throws Exception;
 
-    int sign(String authorization);
+    int sign(String authorization) throws Exception;
 
-    Token refreshToken(String refreshToken);
+    Token refreshToken(String refreshToken) throws Exception;
 
 }
