@@ -23,7 +23,10 @@ public class User implements Serializable {
 
     private String refreshToken;
 
+    private String authorization;
+
     private String email;
+
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -54,6 +57,14 @@ public class User implements Serializable {
     }
     public String getEmail() {
         return email;
+    }
+
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 
     public void setEmail(String email) {

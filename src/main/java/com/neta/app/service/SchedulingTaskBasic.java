@@ -38,8 +38,8 @@ public class SchedulingTaskBasic {
     /**
      * 每天1点执行一次
      */
-    // @Scheduled(cron = "0 0 1 * * ?")
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
+   //@Scheduled(cron = "*/5 * * * * ?")
     private void sign() throws InterruptedException {
 
         List<User> userList = userService.list();
@@ -52,12 +52,12 @@ public class SchedulingTaskBasic {
                     continue;
                 }
                 user.setRefreshToken(token.getRefreshToken());
+                user.setAuthorization(token.getAuthorization());
                 //更新token
-
                 userService.updateById(user);
 
 
-                String authorization = token.getAuthorization();
+                String authorization = user.getAuthorization();
                 List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
                 for (NetaResponse netaResponse : netaResponses) {
                     //休眠，避免被发现是脚本
@@ -78,12 +78,13 @@ public class SchedulingTaskBasic {
     }
 
     @Scheduled(cron = "0 0 23 * * ?")
+    //@Scheduled(cron = "*/5 * * * * ?")
     private void checkSign() throws InterruptedException {
         List<User> userList = userService.list();
         for (User user : userList) {
 
             try {
-                requestService.checkSign(user.getRefreshToken());
+                requestService.checkSign(user.getAuthorization());
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("{}还没有签到", user.getName());

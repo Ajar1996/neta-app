@@ -1,8 +1,12 @@
 FROM openjdk:8-jdk-alpine
 VOLUME /tmp
 ENV TimeZone=Asia/Shanghai
-# 使用软连接，并且将时区配置覆盖/etc/timezone
-RUN ln -snf /usr/share/zoneinfo/$TimeZone /etc/localtime && echo $TimeZone > /etc/timezone
 ARG neta-app
+ENV CATALINA_HOME /usr/local/tomcat
+
+#设置时区
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+  && echo 'Asia/Shanghai' >/etc/timezone \
+
 COPY neta-app.jar neta-app.jar
 ENTRYPOINT ["java","-jar","/neta-app.jar"]
