@@ -9,7 +9,6 @@ spring:
     port: 25
     protocol: smtp
 
-
   datasource:
     url: jdbc:mysql://192.168.2.187:3306/neta_app
     username: root
