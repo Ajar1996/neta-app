@@ -78,7 +78,7 @@ public class SchedulingTaskBasic {
     }
 
     @Scheduled(cron = "0 0 23 * * ?")
-    //@Scheduled(cron = "*/5 * * * * ?")
+   // @Scheduled(cron = "*/5 * * * * ?")
     private void checkSign() throws InterruptedException {
         List<User> userList = userService.list();
         for (User user : userList) {

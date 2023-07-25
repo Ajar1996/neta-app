@@ -110,7 +110,7 @@ public class RequestServiceImpl implements RequestService {
                 .timeout(20000)//超时，毫秒
                 .execute().body();
 
-        if ((Integer) JSONUtil.parseObj(sign).get("code") != 417) {
+        if ((Integer) JSONUtil.parseObj(sign).get("code") == 417) {
             log.error("签到失败信息为，{}", sign);
             return (Integer) JSONUtil.parseObj(sign).get("code");
         }
@@ -152,7 +152,7 @@ public class RequestServiceImpl implements RequestService {
                 .timeout(20000)//超时，毫秒
                 .execute().body();
         Integer checkSign = ((Integer) JSONUtil.parseObj(JSONUtil.parseObj(checkSignResponse).get("data")).get("sign"));
-        if (checkSign == 0) {
+        if (checkSign!=null&&checkSign == 0) {
             throw new Exception("还没签到");
         } else
             return true;
