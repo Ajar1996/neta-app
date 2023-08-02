@@ -10,7 +10,7 @@ spring:
     protocol: smtp
 
   datasource:
-    url: jdbc:mysql://192.168.2.187:3306/neta_app
+    url: jdbc:mysql://www.ajarz.icu:3306/neta_app
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver

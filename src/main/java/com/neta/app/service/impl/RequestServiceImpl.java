@@ -35,7 +35,7 @@ public class RequestServiceImpl implements RequestService {
                 .body("{\"articleId\":\"" +
                         groupId +
                         "\",\"forwardTo\":\"1\"}")//表单内容
-                .timeout(20000)//超时，毫秒
+                .timeout(40000)//超时，毫秒
                 .execute().body();
         if ((Integer) JSONUtil.parseObj(forwar).get("code") != 200) {
             log.error("转发失败，{}", forwar);
@@ -58,7 +58,7 @@ public class RequestServiceImpl implements RequestService {
                         "\",\"groupId\":\"" +
                         groupId +
                         "\",\"generateType\":\"ugc_api\"}")//表单内容
-                .timeout(20000)//超时，毫秒
+                .timeout(40000)//超时，毫秒
                 .execute().body();
 
         if ((Integer) JSONUtil.parseObj(commnetsRespone).get("code") != 200) {
@@ -78,7 +78,7 @@ public class RequestServiceImpl implements RequestService {
                 .form("category", "xiaoquan")
                 .form("refreshType", "refresh")
                 .form("uuid", IdUtil.simpleUUID())
-                .timeout(20000)//超  时，毫秒
+                .timeout(40000)//超  时，毫秒
                 .execute().body();
 
 
@@ -107,7 +107,7 @@ public class RequestServiceImpl implements RequestService {
         //签到
         String sign = HttpRequest.get(RequestEnum.sign.getUrl())
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
-                .timeout(20000)//超时，毫秒
+                .timeout(40000)//超时，毫秒
                 .execute().body();
 
         if ((Integer) JSONUtil.parseObj(sign).get("code") == 417) {
@@ -129,10 +129,10 @@ public class RequestServiceImpl implements RequestService {
         //刷新token
         String tokenResponse = HttpRequest.post(RequestEnum.refreshToken.getUrl())
                 .form("refreshToken", refreshToken)
-                .timeout(20000)//超时，毫秒
+                .timeout(40000)//超时，毫秒
                 .execute().body();
 
-        if ((Integer) JSONUtil.parseObj(tokenResponse).get("code") != 20000) {
+        if ((Integer) JSONUtil.parseObj(tokenResponse).get("code") != 40000) {
             log.error("刷新失败,{}", tokenResponse);
             throw new Exception("tokenResponse");
         }
@@ -149,7 +149,7 @@ public class RequestServiceImpl implements RequestService {
         //检查是否签到
         String checkSignResponse = HttpRequest.get(RequestEnum.checkSign.getUrl())
                 .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
-                .timeout(20000)//超时，毫秒
+                .timeout(40000)//超时，毫秒
                 .execute().body();
         Integer checkSign = ((Integer) JSONUtil.parseObj(JSONUtil.parseObj(checkSignResponse).get("data")).get("sign"));
         if (checkSign!=null&&checkSign == 0) {
