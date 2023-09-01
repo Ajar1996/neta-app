@@ -30,16 +30,16 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public int forwarArticle(String groupId, String authorization) throws Exception {
         //转发帖子
-        String forwar = HttpRequest.put(RequestEnum.forwarArticle.getUrl())
-                .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
-                .body("{\"articleId\":\"" +
-                        groupId +
-                        "\",\"forwardTo\":\"1\"}")//表单内容
-                .timeout(40000)//超时，毫秒
-                .execute().body();
+        String forwar =
+                HttpRequest.put(RequestEnum.forwarArticle.getUrl())
+                        .header(Header.CONTENT_TYPE, "application/json;charset=utf-8")
+                        .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
+                        .body("{\"articleId\":\"" + RandomUtil.randomInt(10) + "\",\"forwardTo\":\"1\"}")//表单内容
+                        .timeout(40000)//超时，毫秒
+                        .execute().body();
         if ((Integer) JSONUtil.parseObj(forwar).get("code") != 200) {
             log.error("转发失败，{}", forwar);
-            throw new Exception("转发失败"+forwar);
+            throw new Exception("转发失败" + forwar);
         }
 
         log.info("转发成功,{}", forwar);
@@ -132,7 +132,7 @@ public class RequestServiceImpl implements RequestService {
                 .timeout(40000)//超时，毫秒
                 .execute().body();
 
-        if ((Integer) JSONUtil.parseObj(tokenResponse).get("code") != 40000) {
+        if ((Integer) JSONUtil.parseObj(tokenResponse).get("code") != 20000) {
             log.error("刷新失败,{}", tokenResponse);
             throw new Exception("tokenResponse");
         }
