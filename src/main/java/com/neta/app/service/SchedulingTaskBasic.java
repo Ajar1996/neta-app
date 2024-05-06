@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,13 +37,14 @@ public class SchedulingTaskBasic {
     @Resource
     MailService mailService;
     /**
-     * 每天1点执行一次
+     * 每天随机时间执行
      */
-    @Scheduled(cron = "0 0 1 * * ?")
-   //@Scheduled(cron = "*/5 * * * * ?")
+    //@Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(fixedDelayString = "#{ T(java.util.concurrent.TimeUnit).HOURS.toMillis(new java.util.Random().nextInt(24)) }")
     private void sign() throws InterruptedException {
 
         List<User> userList = userService.list();
+        Collections.shuffle(userList);
         for (User user : userList) {
             try {
                 log.info("{}开始执行", user.getName());
