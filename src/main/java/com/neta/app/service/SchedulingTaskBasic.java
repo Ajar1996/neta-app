@@ -36,18 +36,33 @@ public class SchedulingTaskBasic {
 
     @Resource
     MailService mailService;
+
+    static int i=3;
+
+    String I="0 0 1 * * ?";
+
+   // @Scheduled(cron = "0 0 0 * * ?")
+    public String getSignTime() throws InterruptedException {
+        int i=new java.util.Random().nextInt(9);
+        i=i+6;
+        String time="0 0 "+i+" * * ?";
+        log.info("下次签到时间为{}点",i);
+        return time;
+    }
+
     /**
      * 每天随机时间执行
      */
-    //@Scheduled(cron = "0 0 1 * * ?")
-    @Scheduled(fixedDelayString = "#{ T(java.util.concurrent.TimeUnit).HOURS.toMillis(new java.util.Random().nextInt(24)) }")
-    private void sign() throws InterruptedException {
+    //@Scheduled(cron = "#{@this.getSignTime()}")
+    //@Scheduled(fixedDelayString = "#{ T(java.util.concurrent.TimeUnit).HOURS.toMillis(new java.util.Random().nextInt(17)) }")
+    //@Scheduled(fixedDelayString = "#{ T(java.util.concurrent.TimeUnit).HOURS.toMillis(this.i) }")
+    public void sign() throws InterruptedException {
 
         List<User> userList = userService.list();
         Collections.shuffle(userList);
         for (User user : userList) {
             try {
-                log.info("{}开始执行", user.getName());
+                log.info("{}开始执行，id为{}", user.getName(),user.getId());
                 Thread.sleep(RandomUtil.randomInt(12000, 20000));
                 Token token = requestService.refreshToken(user.getRefreshToken());
                 if (token == null) {
@@ -64,12 +79,10 @@ public class SchedulingTaskBasic {
                 for (NetaResponse netaResponse : netaResponses) {
                     //休眠，避免被发现是脚本
                     Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                    requestService.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
-                    Thread.sleep(RandomUtil.randomInt(10000, 15000));
                     requestService.forwarArticle(netaResponse.getGroupId(), authorization);
                 }
                 requestService.sign(authorization);
-                log.info("{}执行成功", user.getName());
+                log.info("{}执行成功,id为{}", user.getName(),user.getId());
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("{}执行失败", user.getName());
@@ -79,18 +92,16 @@ public class SchedulingTaskBasic {
         }
     }
 
-    @Scheduled(cron = "0 0 23 * * ?")
-   // @Scheduled(cron = "*/5 * * * * ?")
+   // @Scheduled(cron = "0 0 20 * * ?")
     private void checkSign() throws InterruptedException {
         List<User> userList = userService.list();
         for (User user : userList) {
-
             try {
-                requestService.checkSign(user.getAuthorization());
+                requestService.checkSign(user);
             } catch (Exception e) {
                 e.printStackTrace();
-                log.error("{}还没有签到", user.getName());
-                mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
+                log.error("{}还没有签到,id为{}", user.getName(),user.getId());
+             //   mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
             }
         }
     }

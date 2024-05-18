@@ -9,12 +9,14 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.neta.app.emnu.RequestEnum;
 import com.neta.app.emnu.commentsEnum;
+import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
 import com.neta.app.service.RequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,8 @@ import java.util.List;
 @Slf4j
 public class RequestServiceImpl implements RequestService {
 
+    @Resource
+    UserServiceImpl userService;
     @Override
     public int forwarArticle(String groupId, String authorization) throws Exception {
         //转发帖子
@@ -145,18 +149,36 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public boolean checkSign(String authorization) throws Exception {
+    public void checkSign(User user) throws Exception {
+        log.info("{}开始检查是否签到", user.getId());
+        Thread.sleep(RandomUtil.randomInt(12000, 20000));
+        Token token = this.refreshToken(user.getRefreshToken());
+
+        user.setRefreshToken(token.getRefreshToken());
+        user.setAuthorization(token.getAuthorization());
+        //更新token
+        userService.updateById(user);
+
         //检查是否签到
         String checkSignResponse = HttpRequest.get(RequestEnum.checkSign.getUrl())
-                .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
+                .header(Header.AUTHORIZATION, user.getAuthorization())//头信息，多个头信息多次调用此方法即可
                 .timeout(40000)//超时，毫秒
                 .execute().body();
         Integer checkSign = ((Integer) JSONUtil.parseObj(JSONUtil.parseObj(checkSignResponse).get("data")).get("sign"));
-        if (checkSign!=null&&checkSign == 0) {
-            throw new Exception("还没签到");
-        } else
-            return true;
+        if (checkSign != null && checkSign == 0) {
 
+            String authorization = user.getAuthorization();
+            List<NetaResponse> netaResponses = this.getArticleList(authorization);
+            for (NetaResponse netaResponse : netaResponses) {
+                //休眠，避免被发现是脚本
+                Thread.sleep(RandomUtil.randomInt(10000, 15000));
+                this.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
+                Thread.sleep(RandomUtil.randomInt(10000, 15000));
+                this.forwarArticle(netaResponse.getGroupId(), authorization);
+            }
+            this.sign(authorization);
+            log.info("{}补签成功", user.getId());
+        }
     }
 
 

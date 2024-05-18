@@ -1,5 +1,6 @@
 package com.neta.app.service;
 
+import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
 
@@ -21,6 +22,6 @@ public interface RequestService {
 
     Token refreshToken(String refreshToken) throws Exception;
 
-    boolean checkSign(String authorization) throws Exception;
+    void checkSign(User user) throws Exception;
 
 }
