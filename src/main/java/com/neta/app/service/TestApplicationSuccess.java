@@ -50,6 +50,8 @@ public class TestApplicationSuccess implements ApplicationRunner {
                     .form("uuid", IdUtil.simpleUUID())
                     .timeout(20000)//超  时，毫秒
                     .execute().body();
+            log.info(articleListResponse);
+            userService.updateById(user);
         }
         log.info("程序验证成功！拿铁加油！");
     }

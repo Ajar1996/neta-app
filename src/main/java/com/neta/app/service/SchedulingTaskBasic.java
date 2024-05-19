@@ -63,13 +63,12 @@ public class SchedulingTaskBasic {
         for (User user : userList) {
             try {
                 log.info("{}开始执行，id为{}", user.getName(),user.getId());
-                Thread.sleep(RandomUtil.randomInt(12000, 20000));
                 Token token = requestService.refreshToken(user.getRefreshToken());
                 if (token == null) {
                     continue;
                 }
                 user.setRefreshToken(token.getRefreshToken());
-                user.setAuthorization(token.getAuthorization());
+                    user.setAuthorization(token.getAuthorization());
                 //更新token
                 userService.updateById(user);
 
@@ -78,8 +77,8 @@ public class SchedulingTaskBasic {
                 List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
                 for (NetaResponse netaResponse : netaResponses) {
                     //休眠，避免被发现是脚本
-                    Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                    requestService.forwarArticle(netaResponse.getGroupId(), authorization);
+                    Thread.sleep(RandomUtil.randomInt(2000, 3000));
+                    requestService.forwarArticle(netaResponse.getOpenId(), authorization);
                 }
                 requestService.sign(authorization);
                 log.info("{}执行成功,id为{}", user.getName(),user.getId());

@@ -32,13 +32,13 @@ public class RequestServiceImpl implements RequestService {
     @Resource
     UserServiceImpl userService;
     @Override
-    public int forwarArticle(String groupId, String authorization) throws Exception {
+    public int forwarArticle(String openId, String authorization) throws Exception {
         //转发帖子
         String forwar =
                 HttpRequest.put(RequestEnum.forwarArticle.getUrl())
                         .header(Header.CONTENT_TYPE, "application/json;charset=utf-8")
                         .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
-                        .body("{\"articleId\":\"" + RandomUtil.randomInt(10) + "\",\"forwardTo\":\"1\"}")//表单内容
+                        .body("{\"articleId\":\"" + openId + "\",\"forwardTo\":\"1\"}")//表单内容
                         .timeout(40000)//超时，毫秒
                         .execute().body();
         if ((Integer) JSONUtil.parseObj(forwar).get("code") != 200) {
@@ -171,10 +171,10 @@ public class RequestServiceImpl implements RequestService {
             List<NetaResponse> netaResponses = this.getArticleList(authorization);
             for (NetaResponse netaResponse : netaResponses) {
                 //休眠，避免被发现是脚本
+               //Thread.sleep(RandomUtil.randomInt(10000, 15000));
+                //this.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
                 Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                this.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
-                Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                this.forwarArticle(netaResponse.getGroupId(), authorization);
+                this.forwarArticle(netaResponse.getOpenId(), authorization);
             }
             this.sign(authorization);
             log.info("{}补签成功", user.getId());

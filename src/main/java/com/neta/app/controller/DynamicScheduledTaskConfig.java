@@ -60,6 +60,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
     }
 
     public void checkSign() {
+        log.info("开始检查签到");
         List<User> userList = userService.list();
         for (User user : userList) {
             try {
@@ -70,11 +71,13 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
                 //   mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
             }
         }
+        log.info("检查签到结束");
     }
 
 
 
     public void sign() {
+        log.info("开始签到");
         List<User> userList = userService.list();
         Collections.shuffle(userList);
         for (User user : userList) {
@@ -96,7 +99,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
                 for (NetaResponse netaResponse : netaResponses) {
                     //休眠，避免被发现是脚本
                     Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                    requestService.forwarArticle(netaResponse.getGroupId(), authorization);
+                    requestService.forwarArticle(netaResponse.getOpenId(), authorization);
                 }
                 requestService.sign(authorization);
                 log.info("{}执行成功,id为{}", user.getName(), user.getId());
@@ -106,6 +109,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
                 mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到失败", "请登录网站刷新你的授权码");
             }
         }
+        log.info("签到结束");
     }
 
     public String generateCronExpression() {
