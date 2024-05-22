@@ -113,10 +113,15 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
     }
 
     public String generateCronExpression() {
-        int i=new java.util.Random().nextInt(9);
-        i=i+6;
-        String time="0 0 "+i+" * * ?";
-        log.info("下次签到时间为{}点",i);
+        //指定小时
+        int hour=new java.util.Random().nextInt(9);
+        hour=hour+6;
+        
+        //指定分钟
+        int min=new java.util.Random().nextInt(55);
+
+        String time="0 "+min+" "+hour+" * * ?";
+        log.info("下次签到时间为{}点{}分",hour,min);
         return time;
         // Generate cron expression dynamically here. For example, every minute:
     }

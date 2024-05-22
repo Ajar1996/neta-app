@@ -1,7 +1,10 @@
 package com.neta.app.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -17,6 +20,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     private String name;
@@ -27,6 +31,25 @@ public class User implements Serializable {
 
     private String email;
 
+    private String remark;
+
+    private String phone;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
