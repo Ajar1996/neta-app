@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Random;
 
 /**
  * <p>
@@ -51,20 +52,25 @@ public class UserController {
     @PostMapping("/insert")
     public void insert(@RequestBody User user) throws Exception {
         log.info("{}开始签到", user.getName());
+        Random random = new Random();
+        // 生成4个0-255之间的随机数
+        int octet1 = random.nextInt(256);
+        int octet2 = random.nextInt(256);
+        int octet3 = random.nextInt(256);
+        int octet4 = random.nextInt(256);
+
+        // 格式化成IP地址字符串
+        String ipAddress = String.format("%d.%d.%d.%d", octet1, octet2, octet3, octet4);
+
+        user.setIp(ipAddress);
+
         Token token = requestService.refreshToken(user.getRefreshToken());
 
         user.setRefreshToken(token.getRefreshToken());
         user.setAuthorization(token.getAuthorization());
         userService.save(user);
 
-        String authorization = user.getAuthorization();
-        List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
-        for (NetaResponse netaResponse : netaResponses) {
-            //休眠，避免被发现是脚本
-            Thread.sleep(RandomUtil.randomInt(10000, 15000));
-            requestService.forwarArticle(netaResponse.getOpenId(), authorization);
-        }
-        requestService.sign(authorization);
+        requestService.sign(user);
         log.info("{}执行结束", user.getName());
     }
 

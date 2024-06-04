@@ -18,7 +18,7 @@ public interface RequestService {
 
     List<NetaResponse> getArticleList(String authorization) throws Exception;
 
-    int sign(String authorization) throws Exception;
+    int sign(User user) throws Exception;
 
     Token refreshToken(String refreshToken) throws Exception;
 

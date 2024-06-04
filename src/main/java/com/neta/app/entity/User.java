@@ -35,6 +35,16 @@ public class User implements Serializable {
 
     private String phone;
 
+    private String ip;
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     public String getRemark() {
         return remark;
     }

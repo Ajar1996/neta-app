@@ -93,15 +93,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
                 //更新token
                 userService.updateById(user);
 
-
-                String authorization = user.getAuthorization();
-                List<NetaResponse> netaResponses = requestService.getArticleList(authorization);
-                for (NetaResponse netaResponse : netaResponses) {
-                    //休眠，避免被发现是脚本
-                    Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                    requestService.forwarArticle(netaResponse.getOpenId(), authorization);
-                }
-                requestService.sign(authorization);
+                requestService.sign(user);
                 log.info("{}执行成功,id为{}", user.getName(), user.getId());
             } catch (Exception e) {
                 e.printStackTrace();

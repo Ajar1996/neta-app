@@ -80,7 +80,7 @@ public class SchedulingTaskBasic {
                     Thread.sleep(RandomUtil.randomInt(2000, 3000));
                     requestService.forwarArticle(netaResponse.getOpenId(), authorization);
                 }
-                requestService.sign(authorization);
+                requestService.sign(user);
                 log.info("{}执行成功,id为{}", user.getName(),user.getId());
             } catch (Exception e) {
                 e.printStackTrace();

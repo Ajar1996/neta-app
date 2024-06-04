@@ -107,10 +107,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public int sign(String authorization) throws Exception {
+    public int sign(User user) throws Exception {
         //签到
         String sign = HttpRequest.get(RequestEnum.sign.getUrl())
-                .header(Header.AUTHORIZATION, authorization)//头信息，多个头信息多次调用此方法即可
+                .header(Header.AUTHORIZATION, user.getAuthorization())//头信息，多个头信息多次调用此方法即可
+                .header("X-Forwarded-For", user.getIp())
+                .header("Client-IP", user.getIp())
                 .timeout(40000)//超时，毫秒
                 .execute().body();
 
@@ -123,6 +125,7 @@ public class RequestServiceImpl implements RequestService {
             log.error("签到失败信息为，{}", sign);
             throw new Exception("签到失败信息"+sign);
         }
+        log.info(sign);
 
         return (Integer) JSONUtil.parseObj(sign).get("code");
     }
@@ -166,17 +169,7 @@ public class RequestServiceImpl implements RequestService {
                 .execute().body();
         Integer checkSign = ((Integer) JSONUtil.parseObj(JSONUtil.parseObj(checkSignResponse).get("data")).get("sign"));
         if (checkSign != null && checkSign == 0) {
-
-            String authorization = user.getAuthorization();
-            List<NetaResponse> netaResponses = this.getArticleList(authorization);
-            for (NetaResponse netaResponse : netaResponses) {
-                //休眠，避免被发现是脚本
-               //Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                //this.insertArtComment(netaResponse.getOpenId(), netaResponse.getGroupId(), authorization);
-                Thread.sleep(RandomUtil.randomInt(10000, 15000));
-                this.forwarArticle(netaResponse.getOpenId(), authorization);
-            }
-            this.sign(authorization);
+            this.sign(user);
             log.info("{}补签成功", user.getId());
         }
     }
