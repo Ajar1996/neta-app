@@ -94,6 +94,9 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+
+        <finalName>neta-app</finalName>
+
     </build>
 
 </project>
