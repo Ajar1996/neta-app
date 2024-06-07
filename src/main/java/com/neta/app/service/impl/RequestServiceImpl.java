@@ -10,6 +10,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.neta.app.emnu.RequestEnum;
 import com.neta.app.emnu.commentsEnum;
+import com.neta.app.entity.Event;
 import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
@@ -36,6 +37,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Resource
     UserServiceImpl userService;
+
+    @Resource
+    EventServiceImpl eventService;
     @Override
     public int forwarArticle(String openId, String authorization) throws Exception {
         //转发帖子
@@ -131,7 +135,7 @@ public class RequestServiceImpl implements RequestService {
             throw new Exception("签到失败信息"+sign);
         }
         log.info(sign);
-
+        eventService.save(Event.builder().event("签到").userId(user.getId()).message(sign).build());
         return (Integer) JSONUtil.parseObj(sign).get("code");
     }
 
@@ -193,6 +197,7 @@ public class RequestServiceImpl implements RequestService {
                 .timeout(40000)//超时，毫秒
                 .execute().body();
         log.info("幸运抽奖: {}", getLuckyNum);
+        eventService.save(Event.builder().event("幸运抽奖").userId(user.getId()).message(getLuckyNum).build());
 
     }
 

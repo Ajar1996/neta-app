@@ -2,6 +2,7 @@ package com.neta.app.controller;
 
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
@@ -107,7 +108,7 @@ public class UserController {
                     if (status2==1){
                     log.info("{}开始执行，id为{}", user.getName(), user.getId());
                     Token refreshToken = requestService.refreshToken(user.getRefreshToken());
-                    if (refreshToken == null) {
+                    if (refreshToken == null|| StrUtil.isBlank(user.getWechatId())) {
                         continue;
                     }
                     String token =requestService.userLogin(user);
