@@ -15,6 +15,7 @@ import com.neta.app.service.RequestService;
 import com.neta.app.service.impl.MailService;
 import com.neta.app.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,7 @@ public class UserController {
     DynamicScheduledTaskConfig dynamicScheduledTaskConfig;
 
     @PostMapping("/insert")
-    public void insert(@RequestBody User user) throws Exception {
+    public ResponseEntity<String> insert(@RequestBody User user) throws Exception {
         log.info("{}开始签到", user.getName());
         Random random = new Random();
         // 生成4个0-255之间的随机数
@@ -64,24 +65,33 @@ public class UserController {
 
         user.setIp(ipAddress);
 
-        Token token = requestService.refreshToken(user.getRefreshToken());
+        Token refreshToken = requestService.refreshToken(user.getRefreshToken());
 
-        user.setRefreshToken(token.getRefreshToken());
-        user.setAuthorization(token.getAuthorization());
+        requestService.getCustomer(user);
+
+        if (StrUtil.isNotBlank(user.getWechatId())){
+            String token =requestService.userLogin(user);
+            user.setToken(token);
+
+        }
+        user.setRefreshToken(refreshToken.getRefreshToken());
+        user.setAuthorization(refreshToken.getAuthorization());
         userService.save(user);
 
         requestService.sign(user);
         log.info("{}执行结束", user.getName());
+        return ResponseEntity.ok("插入成功");
     }
 
     @GetMapping ("/sign")
-    public void sign()  {
+    public ResponseEntity<String> sign()  {
         log.info("开始签到");
         dynamicScheduledTaskConfig.sign();
         log.info("执行结束");
+        return ResponseEntity.ok("签到成功");
     }
-    @GetMapping ("/test")
-    public void getLuckyNum() throws Exception {
+    @GetMapping ("/refresh")
+    public ResponseEntity<String> refresh() throws Exception {
         List<User> userList = userService.list();
         for (User user : userList) {
             Token refreshToken = requestService.refreshToken(user.getRefreshToken());
@@ -93,10 +103,11 @@ public class UserController {
             requestService.getCustomer(user);
             userService.updateById(user);
         }
+        return ResponseEntity.ok("刷新微信id成功");
     }
 
     @GetMapping ("/getLuckyNum/{id}")
-    public void getLuckyNum(@PathVariable("id") String id) throws Exception {
+    public ResponseEntity<String> getLuckyNum(@PathVariable("id") String id) throws Exception {
         log.info("开始抽奖");
         Integer status=requestService.selectTurntableList(id);
 
@@ -132,6 +143,7 @@ public class UserController {
         }
 
         log.info("抽奖执行结束");
+        return ResponseEntity.ok("抽奖执行结束");
     }
 
 }

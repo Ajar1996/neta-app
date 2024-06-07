@@ -242,14 +242,14 @@ public class RequestServiceImpl implements RequestService {
                 .execute()
                 .body();
 
+        // 可以根据需要处理响应
+        log.info("微信登录响应: {}", userLogin);
+
         String token= (String) JSONUtil.parseObj(
                 JSONUtil.parseObj(
                         JSONUtil.parseObj(
                                 JSONUtil.parseObj(userLogin).get("data")).get("data")).get("info")).get("token");
 
-
-        // 可以根据需要处理响应
-        log.info("微信登录响应: {}", userLogin);
         return token;
     }
 
