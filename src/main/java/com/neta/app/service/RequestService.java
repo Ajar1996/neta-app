@@ -24,4 +24,11 @@ public interface RequestService {
 
     void checkSign(User user) throws Exception;
 
+    void getLuckyNum(User user,String turntableId) ;
+
+    String userLogin(User user);
+    Integer selectTurntableList(String turntableId);
+
+     void getCustomer(User user);
+
 }

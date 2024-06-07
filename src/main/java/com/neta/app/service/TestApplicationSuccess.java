@@ -35,7 +35,7 @@ public class TestApplicationSuccess implements ApplicationRunner {
     UserServiceImpl userService;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        List<User> userList= userService.list();
+/*        List<User> userList= userService.list();
         for (User user : userList) {
             Token token = requestService.refreshToken(user.getRefreshToken());
             if (token == null) {
@@ -53,6 +53,6 @@ public class TestApplicationSuccess implements ApplicationRunner {
             log.info(articleListResponse);
             userService.updateById(user);
         }
-        log.info("程序验证成功！拿铁加油！");
+        log.info("程序验证成功！拿铁加油！");*/
     }
 }

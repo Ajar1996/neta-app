@@ -2,6 +2,7 @@ package com.neta.app.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
@@ -13,11 +14,15 @@ import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
 import com.neta.app.service.RequestService;
+import freemarker.template.utility.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -172,6 +177,101 @@ public class RequestServiceImpl implements RequestService {
             this.sign(user);
             log.info("{}补签成功", user.getId());
         }
+    }
+
+    @Override
+    public void getLuckyNum(User user,String turntableId)  {
+
+        //幸运抽奖
+        String getLuckyNum = HttpRequest.post(RequestEnum.getLuckyNum.getUrl())
+                .header(Header.AUTHORIZATION, user.getAuthorization())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-Forwarded-For", user.getIp())
+                .header("Client-IP", user.getIp())
+                .form("token", user.getToken())
+                .form("turntableId", turntableId)
+                .timeout(40000)//超时，毫秒
+                .execute().body();
+        log.info("幸运抽奖: {}", getLuckyNum);
+
+    }
+
+    @Override
+    public void getCustomer(User user)  {
+        //幸运抽奖
+        String getCustomer = HttpRequest.get(RequestEnum.getCustomer.getUrl())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-Forwarded-For", user.getIp())
+                .header(Header.AUTHORIZATION, user.getAuthorization())
+                .timeout(40000)//超时，毫秒
+                .execute().body();
+
+        String userUuid = ((String) JSONUtil.parseObj(JSONUtil.parseObj(getCustomer).get("data")).get("userUuid"));
+        if (StrUtil.isNotBlank(userUuid)){
+            user.setUserUuid(userUuid);
+        }
+
+        String wechatId = ((String) JSONUtil.parseObj(JSONUtil.parseObj(getCustomer).get("data")).get("wechatId"));
+        if (StrUtil.isNotBlank(wechatId)){
+            user.setWechatId(wechatId);
+        }
+    }
+
+    @Override
+    public String userLogin(User user)  {
+        String userLogin = HttpRequest.post(RequestEnum.userLogin.getUrl())
+                .header(Header.AUTHORIZATION, user.getAuthorization())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-Forwarded-For", user.getIp())
+                .header("Client-IP", user.getIp())
+                .form("phone", user.getPhone())
+                .form("access_token", user.getAuthorization())
+                .form("refresh_token", user.getRefreshToken())
+                .form("type", "2")
+                .form("uuid", user.getUserUuid())
+                .form("openId", user.getWechatId())
+                .form("inviter_uuid", "")
+                .form("activity_id", "0")
+                .form("token", generateToken())
+                .timeout(40000)
+                .execute()
+                .body();
+
+        String token= (String) JSONUtil.parseObj(
+                JSONUtil.parseObj(
+                        JSONUtil.parseObj(
+                                JSONUtil.parseObj(userLogin).get("data")).get("data")).get("info")).get("token");
+
+
+        // 可以根据需要处理响应
+        log.info("微信登录响应: {}", userLogin);
+        return token;
+    }
+
+    public static String generateToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        Base64.Encoder base64Encoder = Base64.getUrlEncoder().withoutPadding();
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
+    }
+
+    @Override
+    public Integer selectTurntableList(String turntableId)  {
+        //幸运抽奖
+        String selectTurntableList = HttpRequest.get(RequestEnum.selectTurntableList.getUrl())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-Forwarded-For", "192.168.1.1")
+                .form("token", generateToken())
+                .form("turntableId", turntableId)
+                .timeout(40000)//超时，毫秒
+                .execute().body();
+        log.info("获取抽奖列表 {}", selectTurntableList);
+        JSONObject turntableJson = JSONUtil.parseObj(selectTurntableList);
+        JSONArray jsonArray = (JSONArray) turntableJson.get("data");
+        JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+        Integer status = (Integer) jsonObject.get("status");
+        return status;
     }
 
 

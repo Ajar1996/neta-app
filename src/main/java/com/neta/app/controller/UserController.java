@@ -14,14 +14,13 @@ import com.neta.app.service.RequestService;
 import com.neta.app.service.impl.MailService;
 import com.neta.app.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -79,6 +78,59 @@ public class UserController {
         log.info("开始签到");
         dynamicScheduledTaskConfig.sign();
         log.info("执行结束");
+    }
+    @GetMapping ("/test")
+    public void getLuckyNum() throws Exception {
+        List<User> userList = userService.list();
+        for (User user : userList) {
+            Token refreshToken = requestService.refreshToken(user.getRefreshToken());
+            if (refreshToken == null) {
+                continue;
+            }
+            user.setRefreshToken(refreshToken.getRefreshToken());
+            user.setAuthorization(refreshToken.getAuthorization());
+            requestService.getCustomer(user);
+            userService.updateById(user);
+        }
+    }
+
+    @GetMapping ("/getLuckyNum/{id}")
+    public void getLuckyNum(@PathVariable("id") String id) throws Exception {
+        log.info("开始抽奖");
+        Integer status=requestService.selectTurntableList(id);
+
+        if (status==1){
+            List<User> userList = userService.list();
+            for (User user : userList) {
+                try {
+                    Integer status2=requestService.selectTurntableList(id);
+                    if (status2==1){
+                    log.info("{}开始执行，id为{}", user.getName(), user.getId());
+                    Token refreshToken = requestService.refreshToken(user.getRefreshToken());
+                    if (refreshToken == null) {
+                        continue;
+                    }
+                    String token =requestService.userLogin(user);
+                    user.setRefreshToken(refreshToken.getRefreshToken());
+                    user.setAuthorization(refreshToken.getAuthorization());
+                    user.setToken(token);
+
+                    //更新token
+                    userService.updateById(user);
+                    requestService.getLuckyNum(user,id);
+
+                    log.info("{}执行成功,id为{}", user.getName(), user.getId());
+                    }else {
+                        log.info("抽完咯，没有了");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.error("{}执行失败", user.getName());
+                }
+            }
+        }
+
+        log.info("抽奖执行结束");
     }
 
 }

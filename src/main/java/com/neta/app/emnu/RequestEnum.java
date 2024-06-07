@@ -12,6 +12,14 @@ public enum RequestEnum {
     refreshToken("https://appapi-pki.chehezhi.cn:18443/customer/account/info/refreshApiToken"),
     forwarArticle("https://appapi-pki.chehezhi.cn:18443/hznz/app_article/forwarArticle"),
 
+    getLuckyNum("https://api.chehezhi.cn/hznz/app_lucky_star/getLuckyNum"),
+
+    userLogin("https://www.hozonauto.com/api_lottery/user_login"),
+    getCustomer("https://appapi-pki.chehezhi.cn:18443/hznz/customer/getCustomer"),
+    selectTurntableList("https://api.chehezhi.cn/hznz/app_lucky_star/selectTurntableList"),
+
+
+
     checkSign("https://appapi-pki.chehezhi.cn:18443/hznz/customer/getCustomer");
 
 
