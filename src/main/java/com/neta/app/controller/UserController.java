@@ -100,6 +100,7 @@ public class UserController {
             }
             user.setRefreshToken(refreshToken.getRefreshToken());
             user.setAuthorization(refreshToken.getAuthorization());
+            user.setIp(requestService.getIp());
             requestService.getCustomer(user);
             userService.updateById(user);
         }

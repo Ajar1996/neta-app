@@ -31,4 +31,6 @@ public interface RequestService {
 
      void getCustomer(User user);
 
+     String getIp();
+
 }
