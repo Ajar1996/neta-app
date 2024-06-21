@@ -11,10 +11,10 @@ import org.springframework.stereotype.Controller;
  * </p>
  *
  * @author springBoot-Learning
- * @since 2024-06-13
+ * @since 2024-06-21
  */
 @Controller
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/ip")
+public class IpController {
 
 }

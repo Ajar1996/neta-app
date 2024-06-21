@@ -23,7 +23,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") +"/src/main/resources/mapper/")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("event") // 设置需要生成的表名
+                    builder.addInclude("ip") // 设置需要生成的表名
                             // 设置自动填充的时间字段
                             .entityBuilder().addTableFills(
                                     new Column("create_time", FieldFill.INSERT),new Column("update_time", FieldFill.INSERT_UPDATE))

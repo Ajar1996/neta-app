@@ -1,6 +1,10 @@
 package com.neta.app.service;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.HttpRequest;
+import com.neta.app.emnu.RequestEnum;
+import com.neta.app.emnu.commentsEnum;
 import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
@@ -101,6 +105,36 @@ public class SchedulingTaskBasic {
                 e.printStackTrace();
                 log.error("{}还没有签到,id为{}", user.getName(),user.getId());
              //   mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
+            }
+        }
+    }
+
+
+    //@Scheduled(fixedDelayString = "#{ T(java.util.concurrent.TimeUnit).HOURS.toMillis(new java.util.Random().nextInt(17)) }")
+    private void checkSign1() throws InterruptedException {
+        List<User> userList = userService.list();
+        Collections.shuffle(userList);
+        commentsEnum.valueOf("comments4");
+        for (User user : userList) {
+            try {
+                Thread.sleep(3000);
+                Token token = requestService.refreshToken(user.getRefreshToken());
+                String getCustomer = HttpRequest.post("https://api.chehezhi.cn/hznz/app_article/insertArtComment")
+                        .header(Header.AUTHORIZATION, token.getAuthorization())//头信息，多个头信息多次调用此方法即可
+                        .header("X-Forwarded-For", user.getIp())
+                        .header("Client-IP", user.getIp())
+                        .body("{\"content\":\"" +
+                                commentsEnum.valueOf("comments" + RandomUtil.randomInt(1, 10)).getUrl()+
+                                "\",\"articleId\":\"" +
+                                376780 +
+                                "\"}")//表单内容
+                        .timeout(40000)//超时，毫秒
+                        .execute().body();
+                log.info(getCustomer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("{}还没有签到,id为{}", user.getName(),user.getId());
+                //   mailService.sendSimpleMail(user.getEmail(), "哪吒APP签到提醒", "你今天的app还没有签到，请检查");
             }
         }
     }

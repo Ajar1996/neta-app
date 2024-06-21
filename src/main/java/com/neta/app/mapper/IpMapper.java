@@ -1,6 +1,6 @@
 package com.neta.app.mapper;
 
-import com.neta.app.entity.Event;
+import com.neta.app.entity.Ip;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author springBoot-Learning
- * @since 2024-06-13
+ * @since 2024-06-21
  */
-public interface EventMapper extends BaseMapper<Event> {
+public interface IpMapper extends BaseMapper<Ip> {
 
 }

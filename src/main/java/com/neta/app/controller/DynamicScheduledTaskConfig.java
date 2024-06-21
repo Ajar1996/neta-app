@@ -40,20 +40,23 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
     @Resource
     MailService mailService;
 
+
+
+
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(Executors.newScheduledThreadPool(1));
-        taskRegistrar.addTriggerTask(
+/*        taskRegistrar.addTriggerTask(
                 () -> sign(),
                 triggerContext -> {
                     String cron = generateCronExpression(); // Dynamically generate cron expression
                     return new CronTrigger(cron).nextExecutionTime(triggerContext);
                 }
-        );
+        );*/
         taskRegistrar.addTriggerTask(
                 () -> checkSign(),
                 triggerContext -> {
-                    String cron =  "0 0 20 * * ?"; // Dynamically generate cron expression
+                    String cron =  "0 0 21 * * ?"; // Dynamically generate cron expression
                     return new CronTrigger(cron).nextExecutionTime(triggerContext);
                 }
         );
