@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class MybatisPlusGenerator {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://ajarz.icu:3306/neta_app?useUnicode=true&useSSL=false&characterEncoding=utf8", "root", "Ajar970122")
+        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/neta_app?useUnicode=true&useSSL=false&characterEncoding=utf8", "root", "Ajar970122")
                 .globalConfig(builder -> {
                     builder.author("springBoot-Learning") // 设置作者
                             //.enableSwagger() // 开启 swagger 模式
