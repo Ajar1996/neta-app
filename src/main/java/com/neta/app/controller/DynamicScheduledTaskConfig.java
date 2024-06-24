@@ -46,13 +46,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(Executors.newScheduledThreadPool(1));
-/*        taskRegistrar.addTriggerTask(
-                () -> sign(),
-                triggerContext -> {
-                    String cron = generateCronExpression(); // Dynamically generate cron expression
-                    return new CronTrigger(cron).nextExecutionTime(triggerContext);
-                }
-        );*/
+
         taskRegistrar.addTriggerTask(
                 () -> checkSign(),
                 triggerContext -> {
@@ -67,6 +61,7 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
         List<User> userList = userService.list();
         for (User user : userList) {
             try {
+                Thread.sleep(3000);
                 requestService.checkSign(user);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -107,18 +102,5 @@ public class DynamicScheduledTaskConfig implements SchedulingConfigurer {
         log.info("签到结束");
     }
 
-    public String generateCronExpression() {
-        //指定小时
-        int hour=new java.util.Random().nextInt(9);
-        hour=hour+6;
-        
-        //指定分钟
-        int min=new java.util.Random().nextInt(55);
-
-        String time="0 "+min+" "+hour+" * * ?";
-        log.info("下次签到时间为{}点{}分",hour,min);
-        return time;
-        // Generate cron expression dynamically here. For example, every minute:
-    }
 
 }

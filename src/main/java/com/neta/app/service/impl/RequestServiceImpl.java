@@ -8,9 +8,11 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.neta.app.emnu.RequestEnum;
 import com.neta.app.emnu.commentsEnum;
 import com.neta.app.entity.Event;
+import com.neta.app.entity.Ip;
 import com.neta.app.entity.User;
 import com.neta.app.model.NetaResponse;
 import com.neta.app.model.Token;
@@ -41,6 +43,9 @@ public class RequestServiceImpl implements RequestService {
 
     @Resource
     EventServiceImpl eventService;
+
+    @Resource
+    IpServiceImpl ipService;
     @Override
     public int forwarArticle(String openId, String authorization) throws Exception {
         //转发帖子
@@ -221,6 +226,31 @@ public class RequestServiceImpl implements RequestService {
         if (StrUtil.isNotBlank(wechatId)){
             user.setWechatId(wechatId);
         }
+    }
+
+    @Override
+    public String getCityIp(User user)  {
+        String getCustomer = HttpRequest.get(RequestEnum.getCustomer.getUrl())
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("X-Forwarded-For", user.getIp())
+                .header(Header.AUTHORIZATION, user.getAuthorization())
+                .timeout(40000)//超时，毫秒
+                .execute().body();
+
+        String address = ((String) JSONUtil.parseObj(JSONUtil.parseObj(getCustomer).get("data")).get("address"));
+        if (StrUtil.isNotBlank(address)){
+            String [] split=address.split("-");
+            log.info("城市为{}",split[1]);
+           List<Ip> ipList= ipService.getBaseMapper().selectList(new LambdaQueryWrapper<Ip>().eq(Ip::getCity,split[1]));
+           if (ipList.isEmpty()){
+               return this.getIp();
+           }
+            Random random = new Random();
+            String ip=ipList.get(random.nextInt(ipList.size())).getIp();
+            log.info("ip为{}",ip);
+            return ip;
+        }
+        return this.getIp();
     }
 
 

@@ -33,4 +33,6 @@ public interface RequestService {
 
      String getIp();
 
+     String getCityIp(User user);
+
 }

@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author springBoot-Learning
- * @since 2024-06-07
+ * @since 2024-06-13
  */
 public interface IEventService extends IService<Event> {
 

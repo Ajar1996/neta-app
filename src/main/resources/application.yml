@@ -4,13 +4,16 @@ spring:
 
   mail:
     username: ajar1996@163.com
-    password: XXXXXXX
+    password: xxxxxxxx
     host: smtp.163.com
     port: 25
     protocol: smtp
 
   datasource:
-    url: jdbc:mysql://www.ajarz.icu:3306/neta_app
+    url: jdbc:mysql://xxxxxxxx:3306/neta_app?useUnicode=true&useSSL=false&characterEncoding=utf8
     username: root
-    password: 123456
+    password: xxxxxxxx
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 9000
